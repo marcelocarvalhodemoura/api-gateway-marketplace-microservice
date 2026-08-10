@@ -15,13 +15,13 @@ async function bootstrap() {
           styleSrc: ["'self'", "'unsafe-inline'"],
           imgSrc: ["'self'", 'data:', 'https:'],
         },
-        crossOriginEmbedderPolicy: false,
-        hsts: {
-          // HTTP Strict Transport Security
-          maxAge: 31536000, // 1 ano em segundos
-          includeSubDomains: true, // inclui subdomínios no HSTS
-          preload: true, // precarrega o HSTS no navegador
-        },
+      },
+      crossOriginEmbedderPolicy: false,
+      hsts: {
+        // HTTP Strict Transport Security
+        maxAge: 31536000, // 1 ano em segundos
+        includeSubDomains: true, // inclui subdomínios no HSTS
+        preload: true, // precarrega o HSTS no navegador
       },
     }),
   ); // protege a aplicação contra ataques de injeção de codigo
@@ -37,6 +37,7 @@ async function bootstrap() {
       }
 
       const allowedOrigins = process.env.CORS_ORIGIN?.split(',') ?? ['*'];
+
       if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
