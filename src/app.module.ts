@@ -15,10 +15,21 @@ import { MiddlewareConsumer, NestModule } from '@nestjs/common';
       envFilePath: '.env',
     }),
     ThrottlerModule.forRoot([
+      {
+        name: 'short',
+        ttl: 10000, // 10 segundos
+        limit: 10, // 10 requisições por 10 segundos
+      },
       // configura o throttler para limitar o numero de requisições por minuto
       {
+        name: 'medium',
         ttl: 60000, // 1 minuto
         limit: 100, // 100 requisições por minuto
+      },
+      {
+        name: 'long',
+        ttl: 9000000, // 90 minutos
+        limit: 1000, // 1000 requisições por hora
       },
     ]),
     ProxyModule,

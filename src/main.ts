@@ -6,11 +6,55 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use(helmet()); // protege a aplicação contra ataques de injeção de codigo
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'"],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          imgSrc: ["'self'", 'data:', 'https:'],
+        },
+        crossOriginEmbedderPolicy: false,
+        hsts: {
+          // HTTP Strict Transport Security
+          maxAge: 31536000, // 1 ano em segundos
+          includeSubDomains: true, // inclui subdomínios no HSTS
+          preload: true, // precarrega o HSTS no navegador
+        },
+      },
+    }),
+  ); // protege a aplicação contra ataques de injeção de codigo
+
   app.enableCors({
-    origin: process.env.CORS_ORIGIN ?? '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+
+      const allowedOrigins = process.env.CORS_ORIGIN?.split(',') ?? ['*'];
+      if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error('Not allowed by CORS'), false);
+    },
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'Accept',
+      'Origin',
+      'Access-Control-Request-Method',
+      'Access-Control-Request-Headers',
+    ],
+    credentials: true, // permite que a aplicação seja acessada por outras aplicações
+    maxAge: 86400, // define o tempo de cache do CORS em segundos
   }); // permite que a aplicação seja acessada por outras aplicações
 
   app.useGlobalPipes(
