@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthService } from './service/auth.service';
+import { JwtStrategy } from './strategies/jwt.strategy';
 /**
  * AuthModule is responsible for handling all authentication and authorization
  * related functionality. It uses Passport for authentication and Jwt for token
@@ -23,7 +24,7 @@ import { AuthService } from './service/auth.service';
       inject: [ConfigService],
     }),
   ],
-  providers: [AuthService],
-  exports: [],
+  providers: [AuthService, JwtStrategy],
+  exports: [AuthService],
 })
 export class AuthModule {}
