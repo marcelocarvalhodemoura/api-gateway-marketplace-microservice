@@ -7,6 +7,7 @@ import { ProxyModule } from './proxy/proxy.module';
 import { MiddlewareModule } from './middleware/middleware.module';
 import { LoggingMiddleware } from './middleware/logging/logging.middleware';
 import { MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -34,6 +35,7 @@ import { MiddlewareConsumer, NestModule } from '@nestjs/common';
     ]),
     ProxyModule,
     MiddlewareModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
