@@ -8,19 +8,24 @@ import { JwtService } from '@nestjs/jwt';
 import { serviceConfig } from 'src/config/gateway.config';
 import { firstValueFrom } from 'rxjs';
 
-interface UserSession {
-  userId: string;
-  sessionToken: string;
-  expiresAt: Date;
+export interface UserSession {
+  valid: boolean;
+  user: {
+    userId: string;
+    email: string;
+    name: string;
+    role: string;
+    status: string;
+  } | null;
 }
 
-interface RegisterDto {
+export interface RegisterDto {
   email: string;
   password: string;
   name?: string;
 }
 
-interface AuthRegisterResponse {
+export interface AuthRegisterResponse {
   accessToken?: string;
   userId?: string;
   message?: string;

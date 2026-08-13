@@ -43,7 +43,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload) {
-    if (!payload) {
+    if (!payload.token) {
       throw new UnauthorizedException('Missing token in payload');
     }
 
