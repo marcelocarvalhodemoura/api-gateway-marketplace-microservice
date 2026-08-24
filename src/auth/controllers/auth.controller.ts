@@ -5,6 +5,7 @@ import type {
   AuthRegisterResponse,
   RegisterDto,
 } from '../service/auth.service';
+import { Public } from '../decorators/public.decorator';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -27,6 +28,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Register a new user' })
   @ApiResponse({ status: 201, description: 'Registered successfully' })
   @ApiResponse({ status: 400, description: 'Invalid registration data' })
+  @Public()
   async register(
     @Body() registerDto: RegisterDto,
   ): Promise<AuthRegisterResponse> {
