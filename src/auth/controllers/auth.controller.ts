@@ -6,6 +6,7 @@ import type {
   RegisterDto,
 } from '../service/auth.service';
 import { Public } from '../decorators/public.decorator';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -17,6 +18,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Login a user' })
   @ApiResponse({ status: 200, description: 'Logged in successfully' })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
+  @Throttle({ short: { limit: 5, ttl: 60000 } })
   async login(
     @Body() loginDto: { email: string; password: string },
   ): Promise<string> {
@@ -29,6 +31,7 @@ export class AuthController {
   @ApiResponse({ status: 201, description: 'Registered successfully' })
   @ApiResponse({ status: 400, description: 'Invalid registration data' })
   @Public()
+  @Throttle({ medium: { limit: 3, ttl: 60000 } })
   async register(
     @Body() registerDto: RegisterDto,
   ): Promise<AuthRegisterResponse> {
