@@ -67,9 +67,54 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('API Gateway Microservice') // define o titulo da API
-    .setDescription('API Gateway Microservice Marketplace for the application') // define a descrição da API
+    .setDescription(
+      `
+      API Gateway Marketplace para aplicaçãoo de microserviços
+
+      Serviços disponíveis:
+      - User Service: Autenticação e gestão de usuários
+      - Product Service: Catálogo e gestão de produtos
+      - Checkout Service: Carrinho e processamento de pedidos
+      - Payment Service: Processamento de pagamentos
+
+      Autenticação:
+      - Use JWT Bearer Token para todas as rotas protegidas
+      - Use Session Token para validação de sessão
+    `,
+    ) // define a descrição da API
     .setVersion('1.0') // define a versão da API
-    .addBearerAuth() // adiciona o token de autenticação ao swagger
+    .setContact(
+      'Marketplace Team',
+      'https://marketplace.com',
+      'marketplace@marketplace.com',
+    )
+    .setLicense('MIT', 'https://opensource.org/licenses/MIT')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'JWT token for authentication',
+        in: 'header',
+      },
+      'JWT',
+    ) // adiciona o token de autenticação ao swagger
+    .addApiKey(
+      {
+        type: 'apiKey',
+        name: 'x-session-token',
+        in: 'header',
+        description: 'Session token for authentication',
+      },
+      'session-auth',
+    ) // adiciona o token de autenticação ao swagger
+    .addTag('Authentication', 'Serviço de autenticação e gestão de usuários')
+    .addTag('Users', 'Endpoint para autorização e gestão de permissões')
+    .addTag('Products', 'Endpoint para catálogo e gestão de produtos')
+    .addTag('Checkout', 'Endpoint para carrinho e processamento de pedidos')
+    .addTag('Payment', 'Endpoint para processamento de pagamentos')
+    .addTag('Health', 'Endpoint para verificar a saúde da aplicação')
     .build(); // cria a configuração do swagger como um objeto
 
   const document = SwaggerModule.createDocument(app, config); // cria o documento do swagger
