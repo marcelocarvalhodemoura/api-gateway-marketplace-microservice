@@ -4,9 +4,12 @@ import * as PassportJwt from 'passport-jwt';
 import { AuthService } from '../service/auth.service';
 
 type JwtPayload = {
-  sub?: string;
-  email?: string;
-  token?: string;
+  sub: string;
+  email: string;
+  token: string;
+  role: string;
+  iat?: number;
+  exp?: number;
 };
 
 type JwtFromRequestFn = (request: unknown) => string | null;

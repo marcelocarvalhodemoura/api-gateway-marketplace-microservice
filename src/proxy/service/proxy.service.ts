@@ -2,6 +2,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { serviceConfig } from '../../config/gateway.config';
 
+type HttpMethod =
+  'get' | 'post' | 'put' | 'delete' | 'patch' | 'options' | 'head';
+
 type ProxyUserInfo = {
   id?: string;
   email?: string;
@@ -35,7 +38,7 @@ export class ProxyService {
 
   async proxyRequest(
     serviceName: keyof typeof serviceConfig,
-    httpVerb: string,
+    method: HttpMethod,
     path: string,
     data?: unknown,
     headers?: Record<string, string>,
@@ -44,24 +47,24 @@ export class ProxyService {
     const service = serviceConfig[serviceName];
     const url = `${service.url}${path}`;
 
-    this.logger.log(`Proxying ${httpVerb} request to ${serviceName} : ${url}`);
+    this.logger.log(`Proxying ${method} request to ${serviceName} : ${url}`);
 
     try {
-      const enhancedHeaders: Record<string, string> = {
+      const enhancedHeaders = {
         ...headers,
-        ...(userInfo?.id ? { 'x-user-id': userInfo.id } : {}),
-        ...(userInfo?.email ? { 'x-user-email': userInfo.email } : {}),
-        ...(userInfo?.role ? { 'x-user-role': userInfo.role } : {}),
+        'x-user-id': userInfo?.id,
+        'x-user-email': userInfo?.email,
+        'x-user-role': userInfo?.role,
       };
 
       const { axiosRef } = this.httpService as unknown as {
         axiosRef: AxiosRef;
       };
       const response = await axiosRef.request({
-        method: httpVerb.toLowerCase(),
+        method: method.toLowerCase(),
         url,
         data,
-        headers: enhancedHeaders,
+        headers: enhancedHeaders as Record<string, string>,
         timeout: service.timeout,
       });
 
@@ -69,7 +72,7 @@ export class ProxyService {
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
       this.logger.error(
-        `Error proxying ${httpVerb} request to ${serviceName}: ${message}`,
+        `Error proxying ${method} request to ${serviceName}: ${message}`,
       );
       throw error;
     }

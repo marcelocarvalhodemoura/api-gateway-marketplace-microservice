@@ -118,7 +118,17 @@ async function bootstrap() {
     .build(); // cria a configuração do swagger como um objeto
 
   const document = SwaggerModule.createDocument(app, config); // cria o documento do swagger
-  SwaggerModule.setup('api', app, document); // define a rota do swagger e o documento do swagger
+  SwaggerModule.setup('api', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+    customSiteTitle: 'API Gateway Marketplace',
+    customfavIcon: 'https://marketplace.com/favicon.ico',
+    customCss: `
+    .swagger-ui .topbar { display: none; }
+    .swagger-ui .info .main .title {color:  #3b82f6; }
+    `,
+  }); // define a rota do swagger e o documento do swagger
 
   const port = process.env.PORT ?? 3005; // define a porta do servidor
   await app.listen(port); // inicia o servidor

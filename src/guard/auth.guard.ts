@@ -7,6 +7,12 @@ import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 
+interface JwtUser {
+  userId: string;
+  email: string;
+  role: string;
+}
+
 /**
  * Guard to verify if the user is authenticated
  */
@@ -36,10 +42,19 @@ export class JwtAuthenticationGuard extends AuthGuard('jwt') {
   }
 
   //eslint-disable-next-line @typescript-eslint/no-unused-vars
-  handleRequest(err: any, user: any, info: any) {
+  handleRequest<TUser = JwtUser>(
+    err: Error | null,
+    user: JwtUser | false,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _info: unknown,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _context: ExecutionContext,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _status?: number,
+  ): TUser {
     if (err || !user) {
       throw err || new UnauthorizedException();
     }
-    return user;
+    return user as TUser;
   }
 }

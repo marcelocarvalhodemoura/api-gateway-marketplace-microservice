@@ -13,7 +13,10 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Login a user' })
+  @ApiOperation({
+    summary: 'Login a user',
+    description: 'Login a user with email and password',
+  })
   @ApiResponse({ status: 200, description: 'Logged in successfully' })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   @Throttle({ short: { limit: 5, ttl: 60000 } })
@@ -23,9 +26,13 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Register a new user' })
+  @ApiOperation({
+    summary: 'Register a new user',
+    description: 'Register a new user with email, password and name',
+  })
   @ApiResponse({ status: 201, description: 'Registered successfully' })
   @ApiResponse({ status: 400, description: 'Invalid registration data' })
+  @ApiResponse({ status: 409, description: 'User already exists' })
   @Public()
   @Throttle({ medium: { limit: 3, ttl: 60000 } })
   async register(
