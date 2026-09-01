@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from '../auth/service/auth.service';
-import { Request } from 'express';
+import type { AuthenticatedRequest } from '../auth/types/authenticated-request';
 
 /**
  * Guard to verify if the user is authenticated
@@ -16,7 +16,9 @@ export class SessionGuard implements CanActivate {
   constructor(private readonly authService: AuthService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request: Request = context.switchToHttp().getRequest();
+    const request = context
+      .switchToHttp()
+      .getRequest<AuthenticatedRequest>();
 
     const sessionToken = request.headers['session_token'] as string;
 

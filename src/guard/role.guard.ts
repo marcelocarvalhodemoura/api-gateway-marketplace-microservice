@@ -5,15 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Request } from 'express';
-
-type AuthenticatedUser = {
-  role: string;
-};
-
-type AuthenticatedRequest = Request & {
-  user?: AuthenticatedUser;
-};
+import type { AuthenticatedRequest } from '../auth/types/authenticated-request';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
